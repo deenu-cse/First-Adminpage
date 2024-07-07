@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import reg from '../images/register.png'
+import '../index.css'
+import { useNavigate } from 'react-router-dom'
+// import { useauth } from '../Store/Authstor'
+
 
 export default function Register() {
+
+    const navigate = useNavigate()
+
+    // const {storinlocal} = useauth()
 
     const [user, setuser] = useState({
         username: "",
@@ -10,18 +18,41 @@ export default function Register() {
         password: ""
     })
 
-    const hndlinput = (e) => {
+    const handleInput = (e) => {
         let name = e.target.name
         let value = e.target.value
-
-        setuser({
-            ...user,
-            [name]: value
-        })
+        setuser({ ...user, [name]: value })
     }
-    const hndlform = (e) => {
+
+    const hndlform = async (e) => {
         e.preventDefault()
-        alert(user)
+        try {
+            const responce = await fetch(`http://localhost:3000/api/router/reg`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            })
+            const resdata = await responce.json()
+            console.log(resdata)
+            if (responce.ok) {
+                // storinlocal(resdata.token)
+                localStorage.setItem('token', resdata.token)
+                setuser({
+                    username: "",
+                    email: "",
+                    phone: "",
+                    password: ""
+                })
+                navigate('/login')
+            } else {
+                alert(JSON.stringify(resdata.msg))
+            }
+            console.log(responce)
+        } catch (error) {
+            console.log('register', error)
+        }
     }
 
     return (
@@ -38,7 +69,6 @@ export default function Register() {
                                     height="500"
                                 />
                             </div>
-                            {/* our main registration code  */}
                             <div className="registration-form">
                                 <h1 className="main-heading mb-3">registration form</h1>
                                 <br />
@@ -50,7 +80,7 @@ export default function Register() {
                                             name="username"
                                             placeholder="username"
                                             value={user.username}
-                                            onChange={hndlinput}
+                                            onChange={handleInput}
                                         />
                                     </div>
                                     <div>
@@ -60,7 +90,7 @@ export default function Register() {
                                             name="email"
                                             placeholder="email"
                                             value={user.email}
-                                            onChange={hndlinput}
+                                            onChange={handleInput}
                                         />
                                     </div>
                                     <div>
@@ -69,7 +99,7 @@ export default function Register() {
                                             type="number"
                                             name="phone"
                                             value={user.phone}
-                                            onChange={hndlinput}
+                                            onChange={handleInput}
                                         />
                                     </div>
                                     <div>
@@ -79,7 +109,7 @@ export default function Register() {
                                             name="password"
                                             placeholder="password"
                                             value={user.password}
-                                            onChange={hndlinput}
+                                            onChange={handleInput}
                                         />
                                     </div>
                                     <br />

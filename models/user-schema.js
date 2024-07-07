@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 const userschema = new mongoose.Schema({
     username: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
@@ -31,9 +31,9 @@ userschema.methods.generatToken = async function () {
             email: this.email,
             admin: this.isAdmin
         },
-            process.env.jwt_key,{
-                expiresIn:"30d",
-            }
+            process.env.jwt_key, {
+            expiresIn: "30d",
+        }
         )
     } catch (error) {
         console.error(error)

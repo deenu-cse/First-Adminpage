@@ -1,18 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import home from '../images/home.png'
 import design from '../images/design.png'
 import '../Pages/Home.css'
 
 const Home = () => {
+
+  const [condata, setcondata] = useState("")
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(user)
+  }
+
+
+  useEffect(() => {
+    const tokenauth = async () => {
+      try {
+        const responce = await fetch(`http://localhost:3000/api/router/user`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        })
+        if (responce.ok) {
+          const data = await responce.json()
+          console.log(data)
+          setcondata(data.msg.username)
+        }
+
+      } catch (error) {
+        console.error("Error in tokenauth:", error)
+      }
+    }
+    tokenauth()
+  }, [])
+
   return (
     <>
       <main>
         <section className="section-hero">
           <div className="container grid grid-two-cols">
             <div className="hero-content">
+              <h1>{condata ? `Hi ${condata}...` : "Loading..."}</h1>
               <p>We are the World Best IT Company</p>
               <h1>Discover Deendayal's
-                <br/> Universe</h1>
+                <br /> Universe</h1>
               <p>
                 Are you ready to take your business to the next level with
                 cutting-edge IT solutions? Look no further! At Deenu's Verse,
@@ -33,8 +64,8 @@ const Home = () => {
               <img
                 src={home}
                 alt="coding together"
-                // width="620"
-                // height="490"
+              // width="620"
+              // height="490"
               />
             </div>
           </div>
@@ -48,8 +79,8 @@ const Home = () => {
             <img
               src={design}
               alt="coding together"
-              // width="400"
-              // height="500"
+            // width="400"
+            // height="500"
             />
           </div>
 

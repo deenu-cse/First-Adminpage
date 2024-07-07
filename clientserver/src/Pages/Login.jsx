@@ -1,7 +1,16 @@
 import React, { useState } from 'react'
 import login from '../images/login.png'
+import { useNavigate } from 'react-router-dom'
+// import { useauth } from '../Store/Authstor'
+import { toast } from 'react-toastify';
+import './Login.css'
 
 export default function Login() {
+
+
+    const navigate = useNavigate()
+
+    // const { storinlocal } = useauth()
 
     const [user, setuser] = useState({
         email: "",
@@ -10,14 +19,36 @@ export default function Login() {
     const handleInput = (e) => {
         let name = e.target.name;
         let value = e.target.value
-        setuser({
-            [name]: value
-        })
+        setuser({ ...user, [name]: value })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        alert(user)
+        try {
+            const responce = await fetch(`http://localhost:3000/api/router/login`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user)
+            })
+            const resdata = await responce.json()
+            console.log('responce data', resdata)
+            if (responce.ok) {
+                // storinlocal(resdata.token)
+                localStorage.setItem('token', resdata.token)
+                setuser({
+                    email: "",
+                    password: ""
+                })
+                navigate('/')
+                window.location.reload()
+            } else {
+                alert(JSON.stringify(resdata.msg))
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <>
@@ -60,7 +91,7 @@ export default function Login() {
                                     </div>
                                     <br />
                                     <button type="submit" className="btn btn-submit">
-                                        Register Now
+                                        Login Now
                                     </button>
                                 </form>
                             </div>

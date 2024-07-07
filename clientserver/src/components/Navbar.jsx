@@ -1,7 +1,14 @@
 import { NavLink } from "react-router-dom";
-import "./Navbar.css"
+import "./Navbar.css";
+import { useState, useEffect } from "react";
 
 export const Navbar = () => {
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
+
   return (
     <>
       <header>
@@ -24,12 +31,20 @@ export const Navbar = () => {
               <li>
                 <NavLink to="/contact"> Contact </NavLink>
               </li>
-              <li>
-                <NavLink to="/register"> Register </NavLink>
-              </li>
-              <li>
-                <NavLink to="/login"> Login </NavLink>
-              </li>
+              {token ? (
+                <li>
+                  <NavLink to="/logout"> Logout </NavLink>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <NavLink to="/register"> Register </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/login"> Login </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
         </div>

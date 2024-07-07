@@ -5,8 +5,17 @@ const authRoute = require('./router/auth-router')
 // const contactRoute = require('./router/contact-router')
 const connectdb = require('./utils/db')
 const errormiddleware = require("./middlevars/errorhandl")
+const cors = require("cors")
+const serviceroute = require('./router/service-router')
 
 
+const corsoptions = {
+    origin: "http://localhost:5173",
+    methods: "GET,POST,DELETE,PUT,PATCH,HEAD",
+    CredentialS: true
+}
+
+app.use(cors(corsoptions))
 app.use(express.json())
 
 app.use("/api/router", authRoute)
